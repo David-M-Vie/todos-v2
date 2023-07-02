@@ -24,7 +24,7 @@ const refreshApp = () => {
       }else {
         todos[keys].forEach(key => {
           html += `
-           <li class="item ${key.completed ? "completed" : ""} 
+           <li class="item ${key.completed ? "completed" : ""}" 
             draggable="true"
             data-uid ="{key.uid}
            "> 
@@ -41,7 +41,7 @@ const refreshApp = () => {
                 />
                 <button
                   class="btn2"
-                  onclick="" // delete todo // 
+                  onclick=""
                 >
                   Delete
                 </button>
@@ -50,7 +50,7 @@ const refreshApp = () => {
                 <div class="col-1">
                   <p
                     contentEditable="true"
-                    onblur="" // editMode function //
+                    onblur=""
                     class="text"
                   >
                     ${key.description}
