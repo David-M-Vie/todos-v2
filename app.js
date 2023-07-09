@@ -112,7 +112,7 @@ const refreshApp = () => {
     const targetList = draggingItem.closest('ul');
     const siblings = [...targetList.querySelectorAll(".item:not(.dragging)")]
     let nextSibling = siblings.find(sibling => {
-      return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2
+      return e.pageY <= sibling.offsetTop + sibling.offsetHeight / 2
     })
     targetList.insertBefore(draggingItem, nextSibling);
 
