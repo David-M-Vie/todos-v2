@@ -12,7 +12,7 @@ const widgetHtml = (keys) => {
       <h2>${keys}</h2>
       <ul class="sortable-list ${keys}">
   `
-  if(todos[keys].lengh === 0) {
+  if(todos[keys].length === 0) {
     html += "Nothing todo here!"
   }else {
     todos[keys].forEach(key => {
@@ -77,12 +77,10 @@ const refreshApp = () => {
         html += widgetHtml(keys)
         document.querySelector('#other-sections').innerHTML = html;
       }
-    }
-    
+    }    
   } // end of widgetBuilder function
 
   widgetBuilder();
-
 
   const sortableLists = document.querySelectorAll(".sortable-list");
   console.log('sortableLists ', sortableLists);
@@ -90,32 +88,42 @@ const refreshApp = () => {
   sortableLists.forEach(list => {
     const items = list.querySelectorAll('.item');
     items.forEach(item => {
-      console.log('list item ', item)
       item.addEventListener("dragstart", () => {
         setTimeout(() => item.classList.add("dragging"), 0)
-      })
-
+      });
       // Removing dragging class from item on dragend event
       item.addEventListener("dragend", () => {
         item.classList.remove("dragging")
         // When drag ends, need to update the todos list with the new order
         // setNewOrder(items.dataset.uid) // WORK IN PROGRESS
-      })
+      });
       item.querySelector('input').addEventListener("change", (e) => {
         toggleCompleted(e)
-      })
+      });
 
       
     })
   })
 
-  const initSortableList = (e) => {
-    e.preventDefault();
+  const initSortableLists = (e) => {
+    console.log(e)
     const draggingItem = document.querySelector(".dragging");
     // find the UL parent of the item being dragged
     const targetList = draggingItem.closest('ul');
-    console.log("targetList", targetList)
+    const siblings = [...targetList.querySelectorAll(".item:not(.dragging)")]
+    let nextSibling = siblings.find(sibling => {
+      return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2
+    })
+    targetList.insertBefore(draggingItem, nextSibling);
+
   }
+
+  sortableLists.forEach(ul => {
+    ul.addEventListener("dragover", (e) => {
+      initSortableLists(e)
+    });
+    ul.addEventListener("dragenter", (e) => e.preventDefault());
+  })
 
 
 } // close refreshApp function
