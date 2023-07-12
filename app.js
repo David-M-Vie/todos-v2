@@ -8,8 +8,13 @@ const widgetHtml = (keys) => {
   let html = '';
 
   html += `
-    <section class="widget ${keys}">
-      <h2>${keys}</h2>
+    <section class="widget ${keys}"
+     data-key="${keys}"
+    >
+      <div> 
+        <h2>${keys}</h2>
+        <button class="btn1 ${keys} open-modal">Add </button>
+      </div>
       <ul class="sortable-list ${keys}">
   `
   if(todos[keys].length === 0) {
@@ -139,3 +144,80 @@ const toggleCompleted = (e) => {
   return; // WORK IN PROGRESS
 }
 
+const addTodo = (target) => {
+  console.log('hello', target)
+  const id = document.querySelector('#id').value;
+  const description = document.querySelector('#description').value;
+  const uid = Math.floor(Math.random() * Date.now());
+
+  const todo = {uid, id, description, dueDate: "tbc", completed: false};
+  todos[target].push(todo);
+  localStorage.setItem("todos", JSON.stringify(todos));
+  refreshApp();
+  closeModal()
+}
+
+
+/* =====================
+     A Modal Window
+   ===================== */
+// An Overlay for the modal to sit on top of:
+const modalOverlay = (status) => {
+  if(status === 'open') {
+    const createOverlay = document.createElement('div');
+    createOverlay.className = "modal-overlay";
+    document.body.appendChild(createOverlay)
+    document.body.style.overflow = "hidden"
+  }else {
+    // must be removing the overlay
+    document.querySelector(".modal-overlay").remove();
+    document.body.style.overflow = "scroll"
+  }
+}
+
+// Modal HTML Template
+const modalHTML = `
+<div class="modal">
+  <div class="top-row">
+    <h2> Add a Todo </h2>
+    <button class="close-modal btn2" >Close</button>
+  </div>
+  <div class="inputs">
+    <input type="text" placeholder="enter id" id="id" />
+  </div>
+  <div class="inputs">
+    <textarea id="description">enter description</textarea>
+  </div>
+  <div class="btn-wrapper">
+    <button class="btn1 add-todo"> Add </button>
+  </div>
+</div>
+`
+
+const openModal = (target) => {
+  // insert overlay first.
+  modalOverlay("open");
+
+  const modalWrapper = document.createElement("div");
+  modalWrapper.innerHTML = modalHTML;
+  document.body.appendChild(modalWrapper)
+
+  document.querySelector('.close-modal').addEventListener("click", closeModal)
+  document.querySelector(".btn-wrapper > .btn1.add-todo").addEventListener('click', () => addTodo(target))
+  document.querySelector('textarea').addEventListener("focus", () => {
+    document.querySelector('textarea').textContent = ""
+  })
+  document.getElementById("id").focus()
+}
+
+const closeModal = () => {
+  document.querySelector('.modal').parentElement.remove();
+  modalOverlay('close')
+}
+
+document.querySelectorAll('.open-modal').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    // console.log(e.target.classList[1]) // Brittle: As only works provided classlist order is not changed...
+    openModal(e.target.closest("section").dataset.key);
+  })
+})

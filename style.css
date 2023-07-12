@@ -48,10 +48,20 @@ main {
 }
 
 #other-sections {
-  background: whitesmoke
+
 }
 
-ul.sortable--list .item {
+section.widget {
+  margin-bottom: 20px;
+}
+
+section > div {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 30px;
+}
+
+ul.sortable-list .item {
 
 }
 
