@@ -1,24 +1,29 @@
 // go out to local storage and retrieve any todos: 
-// let todos = JSON.parse(localStorage.getItem("todos")) || [];
-const todos = JSON.parse(localStorage.getItem("todos"));
-
+const todos = JSON.parse(localStorage.getItem("todos")) || {
+  "priority": []
+};
 console.log(todos)
 
 const widgetHtml = (keys) => {
   let html = '';
 
+  if(keys !== 'priority') {
+    html += `
+      <section 
+        class="widget ${keys}"
+        data-key="${keys}">
+        <div> 
+          <h2>${keys}</h2>
+          <button class="btn1 ${keys} open-modal">Add </button>
+        </div>
+    `
+  }
+
   html += `
-    <section class="widget ${keys}"
-     data-key="${keys}"
-    >
-      <div> 
-        <h2>${keys}</h2>
-        <button class="btn1 ${keys} open-modal">Add </button>
-      </div>
       <ul class="sortable-list ${keys}">
   `
   if(todos[keys].length === 0) {
-    html += "Nothing todo here!"
+    html += "<p>Nothing todo here! </p>"
   }else {
     todos[keys].forEach(key => {
       html += `
@@ -77,7 +82,7 @@ const refreshApp = () => {
     for(let keys in todos) {
       console.log('keys ', keys)
       if(keys === 'priority') { // If it's the main todo widget..
-        document.querySelector('#priority-section').innerHTML = widgetHtml(keys)
+        document.querySelector('#priority-todos').innerHTML = widgetHtml(keys)
       }else { // it must be secondary widgets
         html += widgetHtml(keys)
         document.querySelector('#other-sections').innerHTML = html;
@@ -145,12 +150,14 @@ const toggleCompleted = (e) => {
 }
 
 const addTodo = (target) => {
-  console.log('hello', target)
+  
   const id = document.querySelector('#id').value;
   const description = document.querySelector('#description').value;
   const uid = Math.floor(Math.random() * Date.now());
 
   const todo = {uid, id, description, dueDate: "tbc", completed: false};
+  console.log("todo", todo)
+  console.log('target ', target)
   todos[target].push(todo);
   localStorage.setItem("todos", JSON.stringify(todos));
   refreshApp();

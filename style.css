@@ -33,7 +33,7 @@ main {
   flex-direction: column;
 }
 
-#priority-section,
+section.widget.priority,
 #other-sections {
   background: white;
   padding: 25px;
@@ -51,19 +51,15 @@ main {
 
 }
 
-section.widget {
-  margin-bottom: 20px;
-}
 
-section > div {
+
+section.widget > div:first-child {
   display: flex;
   justify-content: space-between;
   padding-bottom: 30px;
 }
 
-ul.sortable-list .item {
 
-}
 
 ul.sortable-list .item {
   border-radius: 5px;
