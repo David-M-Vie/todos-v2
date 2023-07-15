@@ -228,3 +228,13 @@ document.querySelectorAll('.open-modal').forEach((btn) => {
     openModal(e.target.closest("section").dataset.key);
   })
 })
+
+
+document.querySelector('#menu').addEventListener("click", () => {
+  const element = document.querySelector("#menu ul");
+  element.style.opacity === "0" ? element.style.opacity = "1" : element.style.opacity = "0"
+})
+
+document.querySelector('#menu .add-section').addEventListener("click", () => {
+  openModal();
+})

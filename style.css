@@ -17,9 +17,9 @@ header {
 
 header nav {
   display: flex;
-
   padding: 0 20px;
   justify-content: space-between;
+  align-items: center;
 
 }
 
@@ -28,13 +28,61 @@ header nav li {
   color: white;
 }
 
+header nav li#menu {
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 5px;
+  background: #38384d;
+  border: 1px solid black;
+
+}
+
+header nav li#menu:active,
+header nav li#menu .dropdown-menu li:active  {
+  color: whitesmoke;
+  box-shadow: inset 0px 0px 2px rgba(0,0,0, .9)
+}
+
+header nav li#menu > div {
+  position: relative;
+}
+
+
+header nav li#menu > div > ul {
+  position: absolute;
+  top: 12px;
+  right: -12px;
+  background: #38384d;
+  border: 1px solid black;
+  opacity: 0;
+}
+
+header nav li#menu > div > ul.dropdown-menu > li{
+  font-size: .7rem;
+  padding: 10px;
+  width: 149px;
+  text-align: center;
+}
+
+header nav li#menu > div > ul.dropdown-menu > li:hover {
+  background: #323242;
+}
+
+/* End of nav area */
+
+
+
+/* ============== 
+== Main Screen ==
+=============== */
+
 main {
   display: flex;
   flex-direction: column;
 }
 
 section.widget.priority,
-#other-sections {
+section.widget.others {
   background: white;
   padding: 25px;
   width: 90%;
@@ -42,15 +90,6 @@ section.widget.priority,
   max-width: 500px;
   
 }
-
-#priority-section {
-
-}
-
-#other-sections {
-
-}
-
 
 
 section.widget > div:first-child {

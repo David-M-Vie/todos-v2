@@ -11,19 +11,20 @@
   <body>
     <header>
       <nav>
-        <li class="total-todos">Total: Number </li>
-        <li class="overdue">Overdue: Number</li>
-        <li class="priority-count">Priority: Number</li>
-        <li class="mifCheck-count">MifCheck: Number</li>
-        <li class="beadyEye-count">BeadyEye: Number</li>
+        <li class="total-priority-todos">Priority: 12 </li>
+        <li class="overdue-priority-todos">Overdue: 10</li>
+        <li id="menu">
+          Menu
+          <div>
+            <ul class="dropdown-menu" style="opacity: 0">
+              <li class="add-section">Add a section</li>
+            </ul>
+          </div>
+        </li>
       </nav>
     </header>
     <main>
-
-      <section 
-        class="widget priority"
-        data-key="priority"
-      >
+      <section class="widget priority" data-key="priority">
         <div> 
           <h2>Priority Todos</h2>
           <button class="btn1 priority open-modal">Add </button>
@@ -32,9 +33,11 @@
           <!-- inject js-->
         </div>
       </section>
-      <div id="other-sections">
-        <!-- inject JS -->
-      </div>
+      <section class="widget-others">
+        <div id="other-sections">
+         <!-- inject JS -->
+        </div>
+      </section>
     </main>
     <!-- <ul class="sortable-list">
     </ul> -->
