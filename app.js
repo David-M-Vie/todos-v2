@@ -2,22 +2,13 @@
 const todos = JSON.parse(localStorage.getItem("todos")) || {
   "priority": []
 };
+
+
+
 console.log(todos)
 
 const widgetHtml = (keys) => {
   let html = '';
-
-  if(keys !== 'priority') {
-    html += `
-      <section 
-        class="widget ${keys}"
-        data-key="${keys}">
-        <div> 
-          <h2>${keys}</h2>
-          <button class="btn1 ${keys} open-modal">Add </button>
-        </div>
-    `
-  }
 
   html += `
       <ul class="sortable-list ${keys}">
@@ -69,7 +60,7 @@ const widgetHtml = (keys) => {
       `
     })
   }      
-  html += `</ul></section> `
+  html += `</ul> `
   return html;
 }
 
@@ -84,11 +75,19 @@ const refreshApp = () => {
       if(keys === 'priority') { // If it's the main todo widget..
         document.querySelector('#priority-todos').innerHTML = widgetHtml(keys)
       }else { // it must be secondary widgets
-        html += widgetHtml(keys)
-        document.querySelector('#other-sections').innerHTML = html;
+        html += `<section class="${keys}">
+                  <div class="${keys}" style="display:flex; justify-content: space-between">
+                    <h2>${keys}</h2>
+                    <button class="btn1 ${keys} open-modal">Add </button>
+                  </div>
+                `
+        html += widgetHtml(keys)    
+        html += "</section>"
       }
-    }    
+    } 
+    document.querySelector('.widget.others').innerHTML = html;   
   } // end of widgetBuilder function
+
 
   widgetBuilder();
 
@@ -145,8 +144,8 @@ refreshApp();
 /// FUNCTIONS ///
 /////////////////
 
-const toggleCompleted = (e) => {
-  return; // WORK IN PROGRESS
+const addSection = () => {
+  console.log(' Adding a new section!! ')
 }
 
 const addTodo = (target) => {
@@ -163,6 +162,11 @@ const addTodo = (target) => {
   refreshApp();
   closeModal()
 }
+
+const toggleCompleted = (e) => {
+  return; // WORK IN PROGRESS
+}
+
 
 
 /* =====================
@@ -182,35 +186,69 @@ const modalOverlay = (status) => {
   }
 }
 
-// Modal HTML Template
-const modalHTML = `
-<div class="modal">
-  <div class="top-row">
-    <h2> Add a Todo </h2>
-    <button class="close-modal btn2" >Close</button>
+// Modal HTML Template for adding a todo // 
+const addTodoModalHTML = () => {
+  return `
+  <div class="modal">
+    <div class="top-row">
+      <h2> Add a Todo </h2>
+      <button class="close-modal btn2" >Close</button>
+    </div>
+    <div class="inputs">
+      <input type="text" placeholder="enter id" id="id" />
+    </div>
+    <div class="inputs">
+      <textarea id="description">enter description</textarea>
+    </div>
+    <div class="btn-wrapper">
+      <button class="btn1 add-todo"> Add </button>
+    </div>
   </div>
-  <div class="inputs">
-    <input type="text" placeholder="enter id" id="id" />
-  </div>
-  <div class="inputs">
-    <textarea id="description">enter description</textarea>
-  </div>
-  <div class="btn-wrapper">
-    <button class="btn1 add-todo"> Add </button>
-  </div>
-</div>
-`
+  `
+}
 
-const openModal = (target) => {
+// Modal HTML Template for adding a new section (widget) // 
+const addSectionModalHTML = () => {
+  return `
+  <div class="modal">
+    <div class="top-row">
+      <h2> Create a new Section </h2>
+      <button class="close-modal btn2" >Close</button>
+    </div>
+    <div class="inputs">
+      <input type="text" placeholder="enter section name" id="sectionName" />
+    </div>
+    <div class="btn-wrapper">
+      <button class="btn1 add-section"> Add Section </button>
+    </div>
+  </div>
+  `
+}
+/*
+Desciption:  Function to create a modal, pass along type and target arguments. 
+@params:  type:   "string"   options: "addTodo" || "addSection"
+@params   target: "string"   <this is for addTodo and dicates which section the todo should be added to>
+ */
+const openModal = (type, target) => {
+  
+  console.log(type, target)
   // insert overlay first.
   modalOverlay("open");
 
   const modalWrapper = document.createElement("div");
-  modalWrapper.innerHTML = modalHTML;
+  if(type === "add-section") {
+    addSectionModalHTML(type)
+  }else {
+    addTodoModalHTML(type, target)
+  }
   document.body.appendChild(modalWrapper)
 
   document.querySelector('.close-modal').addEventListener("click", closeModal)
-  document.querySelector(".btn-wrapper > .btn1.add-todo").addEventListener('click', () => addTodo(target))
+  if(type === "add-section") {
+    document.querySelector(".btn-wrapper > .btn1.add-section").addEventListener('click', () => addSection())
+  } else {
+    document.querySelector(".btn-wrapper > .btn1.add-todo").addEventListener('click', () => addTodo(target))
+  }
   document.querySelector('textarea').addEventListener("focus", () => {
     document.querySelector('textarea').textContent = ""
   })
@@ -222,19 +260,21 @@ const closeModal = () => {
   modalOverlay('close')
 }
 
-document.querySelectorAll('.open-modal').forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-    // console.log(e.target.classList[1]) // Brittle: As only works provided classlist order is not changed...
-    openModal(e.target.closest("section").dataset.key);
-  })
-})
 
 
+
+// Event listener to open the nav menu dropdown onclick of the menu button
 document.querySelector('#menu').addEventListener("click", () => {
   const element = document.querySelector("#menu ul");
   element.style.opacity === "0" ? element.style.opacity = "1" : element.style.opacity = "0"
 })
 
+// Event listener to open a modal for creating a new section on click of the add section li
 document.querySelector('#menu .add-section').addEventListener("click", () => {
-  openModal();
+  openModal("add-section");
 })
+
+// Event listener to open a modal for creating a new todo 
+ document.querySelector('.btn1.priority.open-modal').addEventListener("click", () => {
+  openModal("add-todo", "priority")
+ })
