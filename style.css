@@ -9,6 +9,11 @@ body {
   background: #595D88;
 }
 
+/* =======================
+===== THE HEADER BAR =====
+==========================
+*/
+
 header {
   background: #43445d;
   padding: 20px;
@@ -85,10 +90,9 @@ section.widget.priority,
 section.widget.others > section {
   background: white;
   padding: 25px;
-  margin: 0 auto;
-  
-  
+  margin: 0 auto;  
 }
+
 
 section.widget.priority {
   margin: 0 50px 20px;
@@ -102,10 +106,12 @@ section.widget.others {
 
 section.widget.others > section {
   margin-bottom: 20px;
+  font-size: .75rem;
 }
 
 
-section.widget > div:first-child {
+section.widget > div:first-child,
+section.widget > section > div:first-child {
   display: flex;
   justify-content: space-between;
   padding-bottom: 30px;
@@ -148,9 +154,7 @@ div.bottom-row {
 }
 
 p.text {
-  font-size: .8rem;
   color: rgb(84, 84, 84);
-
 }
 
 
@@ -162,12 +166,21 @@ p.text {
   border: none;
 }
 
+
 .btn2 {
   padding: 5px 10px;
   background:rgb(231, 143, 143);;
   color: white;
   border: none;
 }
+
+
+
+section.widget.others > li {
+  font-size: .6rem 
+}
+
+
 
 .btn1:hover,
 .btn2:hover {
@@ -271,7 +284,15 @@ li *[contenteditable = "true"] {
    }
 
    @media (min-width: 1100px) {
-    .widget.priority {
-     
+
+    /* the buttons on right hand side widgets should be smaller */
+    section.widget.others button {
+      padding: 3px 6px;
+      font-size: .7rem;
+    }
+
+    /* The red delete buttons should be small on right hand side widgets*/
+    section.widget.others > .btn2 {
+      padding: 3px 6px;
     }
    }
