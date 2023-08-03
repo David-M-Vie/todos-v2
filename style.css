@@ -52,7 +52,6 @@ header nav li#menu > div {
   position: relative;
 }
 
-
 header nav li#menu > div > ul {
   position: absolute;
   top: 12px;
@@ -95,8 +94,8 @@ section.widget.others > section {
 
 
 section.widget.priority {
-  margin: 0 50px 20px;
-  flex-grow: 3
+  margin: 0 30px 20px;
+  
 }
 
 section.widget.others {
@@ -116,7 +115,6 @@ section.widget > section > div:first-child {
   justify-content: space-between;
   padding-bottom: 30px;
 }
-
 
 
 ul.sortable-list .item {
@@ -166,7 +164,6 @@ p.text {
   border: none;
 }
 
-
 .btn2 {
   padding: 5px 10px;
   background:rgb(231, 143, 143);;
@@ -174,13 +171,9 @@ p.text {
   border: none;
 }
 
-
-
 section.widget.others > li {
   font-size: .6rem 
 }
-
-
 
 .btn1:hover,
 .btn2:hover {
@@ -191,8 +184,6 @@ section.widget.others > li {
 .btn2:active {
   box-shadow: 0px 0px 6px inset rgba(0,0,0, .65)
 }
-
-
 
 .item.dragging :where(.bottom-row, h4) {
   opacity: 0;
@@ -284,6 +275,13 @@ li *[contenteditable = "true"] {
    }
 
    @media (min-width: 1100px) {
+    section.widget.priority {
+      flex-grow: 4;
+    }
+
+    section.widget.others {
+      flex-grow: 1;
+    }
 
     /* the buttons on right hand side widgets should be smaller */
     section.widget.others button {
