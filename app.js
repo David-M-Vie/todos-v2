@@ -337,18 +337,18 @@ const deleteSectionModalHTML = () => {
 // Gets called from inside deleteSectionModalHTML()
 const getSections = () => {
   let sections2DeleteHTML = `
-   <p> Tick to check the sections that you want to delete.</p>  `
-
+   <p> Tick to check the sections that you want to delete.</p>  
+   <ul id="deleteSectionCheckboxes">
+   `
   for(keys in todos) {
     // Should be able to delete all but the priority section.
     if(keys !== "priority") {
-      sections2DeleteHTML += `
-      <div id="deleteSectionCheckboxes">
-        ${keys}: <input type="checkbox" name="delete-section-cb" id="${keys}"/>
-      </div>
+      sections2DeleteHTML += `      
+       <li> ${keys}: <input type="checkbox" name="delete-section-cb" id="${keys}"/> </li>
       `
     }
   }
+  sections2DeleteHTML += `</ul>`
   return sections2DeleteHTML;
 }
 
