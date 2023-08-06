@@ -1,17 +1,13 @@
-// go out to local storage and retrieve any todos: 
-// const todos = JSON.parse(localStorage.getItem("todos")) || {
-//   "priority": []
-// };
+// Go out to local storage and retrieve any todos: 
+let todos = JSON.parse(localStorage.getItem("todos")) || {
+  "priority": []
+};
 
-let todos = {
-  priority: [{id: 1, description: "Kick the Cat", dueDate:"tbc", completed: false},{id: 2, description: "Walk the Dog", dueDate:"tbc", completed: false}],
-  mifCheck: [{id: 232, description: "Check Bob's MIF applied", dueDate: "tbc", completed: false}, {id: 71232, description: "Check Frank's MIF applied", dueDate: "tbc", completed: false}],
-  beadyEye: [{id: 9123, description: "Perhaps Fraud", dueDate:"tbc", completed: false},{id: 12392, description: "Look into this...", dueDate:"tbc", completed: false}, {id: 11, description: "Check these out...", dueDate:"tbc", completed: false}]
-}
+console.log('Current Todos ', todos)
 
-console.log(todos)
-
+// Factory html template for building out widgets
 const widgetHtml = (keys) => {
+  // console.log('keys ', keys)
   let html = '';
 
   html += `
@@ -20,26 +16,27 @@ const widgetHtml = (keys) => {
   if(todos[keys].length === 0) {
     html += "<p>Nothing todo here! </p>"
   }else {
-    todos[keys].forEach(key => {
+    todos[keys].forEach(item => {
+      // console.log('moop key ', keys)
       html += `
-        <li class="item ${key.completed ? "completed" : ""}" 
-        draggable="true"
-        data-uid ="{key.uid}
-        "> 
+        <li class="item ${item.completed ? "completed" : ""}" 
+          draggable="true"
+          data-key = "${keys}"
+          data-uid ="${item.uid}"
+        > 
           <h4 class="top-row">
             <span 
               contentEditable="true"
               onblur=""
             >
-              Id: ${key.id}
+              Id: ${item.id}
             </span>
             <input 
               type="checkbox"
-              ${key.completed ? "checked" : ""}
+              ${item.completed ? "checked" : ""}
             />
             <button
               class="btn2"
-              onclick=""
             >
               Delete
             </button>
@@ -51,12 +48,12 @@ const widgetHtml = (keys) => {
                 onblur=""
                 class="text"
               >
-                ${key.description}
+                ${item.description}
               </p>
             </div>
             <div class="col-2">
               <p class="text">
-                Due: ${key.dueDate}
+                Due: ${item.dueDate}
               </p>
             </div>
           </div>
@@ -69,16 +66,14 @@ const widgetHtml = (keys) => {
 }
 
 const refreshApp = () => {
-  // make a widget for each object in the todos array: eg, priority, mifCheck etc. 
 
-  // function to build widgets. 
+  // // Build out the priority widget and any secondary sidebar widgets if there are any in the todos list. 
   const widgetBuilder = () => {
     let html = '';
     for(let keys in todos) {
-      // console.log('keys ', keys)
       if(keys === 'priority') { // If it's the main todo widget..
         document.querySelector('#priority-todos').innerHTML = widgetHtml(keys)
-      }else { // it must be secondary widgets
+      }else { // any secondary widgets..
         html += `<section class="${keys}">
                   <div class="${keys}" style="display:flex; justify-content: space-between">
                     <h2>${keys}</h2>
@@ -90,15 +85,15 @@ const refreshApp = () => {
       }
     } 
     document.querySelector('.widget.others').innerHTML = html;   
-
-  } // end of widgetBuilder function
-
+  } 
 
   widgetBuilder();
 
-  const sortableLists = document.querySelectorAll(".sortable-list");
-  console.log('sortableLists ', sortableLists);
 
+  // Grab all the UL's for each widget
+  const sortableLists = document.querySelectorAll(".sortable-list");
+
+  // Going through each UL's list-items.
   sortableLists.forEach(list => {
     const items = list.querySelectorAll('.item');
     items.forEach(item => {
@@ -113,9 +108,15 @@ const refreshApp = () => {
       });
       item.querySelector('input').addEventListener("change", (e) => {
         toggleCompleted(e)
-      });
+      }); 
 
-      
+      // Set the delete todo button handler: onclick on each item.
+      item.querySelector('.btn2').addEventListener('click', (e) => {
+        const key = e.target.closest('li').dataset.key;
+        const uid = e.target.closest('li').dataset.uid;        
+        deleteTodo(key, uid)
+      })
+
     })
   })
 
@@ -140,15 +141,13 @@ const refreshApp = () => {
   })
 
 
-  //  Setting the Add todo event on the other widget add buttons. 
+  //  Setting the Add Todo click handler on each UL
    for(let keys in todos) {
     if(keys !== 'priority'){
       document.querySelector(`#${keys}`).addEventListener("click", () => {
       openModal("add-todo", `${keys}`)
     })}
    }
-
-
 
 } // close refreshApp function
 
@@ -159,8 +158,13 @@ refreshApp();
 /// FUNCTIONS ///
 /////////////////
 
-const addSection = () => {
-  console.log(' Adding a new section!! ')
+const addSection = (e) => {
+  const sectionName = document.getElementById('sectionName').value;
+  console.log(sectionName);
+  todos[sectionName] = [];
+  localStorage.setItem('todos', JSON.stringify(todos))
+  refreshApp();
+  closeModal();
 }
 
 const addTodo = (target) => {
@@ -168,10 +172,7 @@ const addTodo = (target) => {
   const id = document.querySelector('#id').value;
   const description = document.querySelector('#description').value;
   const uid = Math.floor(Math.random() * Date.now());
-
   const todo = {uid, id, description, dueDate: "tbc", completed: false};
-  console.log("todo", todo)
-  console.log('target ', target)
   todos[target].push(todo);
   localStorage.setItem("todos", JSON.stringify(todos));
   refreshApp();
@@ -179,9 +180,38 @@ const addTodo = (target) => {
 }
 
 const toggleCompleted = (e) => {
-  return; // WORK IN PROGRESS
+  const li = e.target.closest("li");
+  const uid = Number(li.dataset.uid);
+  // key tell us which widget array the item belongs in. 
+  const key = li.dataset.key;
+  e.target.checked ? li.classList.add("completed") : li.classList.remove("completed");
+  const toggleTodos = todos[key].map(todo => {
+    if(uid === todo.uid) {
+      todo.completed = !todo.completed;
+      li.querySelector("input[type=checkbox]").toggleAttribute("checked")
+    }
+    return todo;
+  })
+  todos[key] = [...toggleTodos];
+  localStorage.setItem('todos', JSON.stringify(todos));
+  refreshApp();
 }
 
+const deleteTodo = (key, uid) => {
+  const filteredTodos = todos[key].filter(todo => {
+    return todo.uid !== Number(uid)
+  });
+  
+  console.log('filteredTodos', filteredTodos)
+  todos[key] = [...filteredTodos];
+  localStorage.setItem("todos", JSON.stringify(todos));
+  refreshApp();
+}
+
+const setNewOrder = (uid) => {
+// Work in progress........
+
+}
 
 
 /* =====================
@@ -199,6 +229,53 @@ const modalOverlay = (status) => {
     document.querySelector(".modal-overlay").remove();
     document.body.style.overflow = "scroll"
   }
+}
+
+/*
+Desciption:  Function to create a modal, pass along type and target arguments. 
+@params:  type:   "string"   options: "addTodo" || "addSection"
+@params   target: "string"   <this is for addTodo and dicates which section the todo should be added to>
+ */
+const openModal = (type, target) => {
+  let modalHTML = '';
+
+  // insert overlay first.
+  modalOverlay("open");
+
+  const modalWrapper = document.createElement("div");
+
+  switch (type) {
+    case 'add-section':
+      modalHTML = addSectionModalHTML();
+      break;
+    
+    case 'add-todo':
+      modalHTML = addTodoModalHTML(type, target)
+      break; 
+
+    case 'delete-section': 
+      modalHTML = deleteSectionModalHTML()
+      break;
+
+    default: modalHTML = addSectionModalHTML();
+      break;
+  }
+
+
+  modalWrapper.innerHTML = modalHTML;
+  document.body.appendChild(modalWrapper)
+
+  document.querySelector('.close-modal').addEventListener("click", closeModal)
+
+  if(type === "add-section") {
+    document.querySelector(".btn-wrapper > .btn1.add-section").addEventListener('click', (e) => addSection(e))
+  } else {
+    document.querySelector(".btn-wrapper > .btn1.add-todo").addEventListener('click', () => addTodo(target));
+    document.querySelector('textarea').addEventListener("focus", () => {
+      document.querySelector('textarea').textContent = ""
+    })
+    document.getElementById("id").focus()
+  }  
 }
 
 // Modal HTML Template for adding a todo // 
@@ -239,37 +316,57 @@ const addSectionModalHTML = () => {
   </div>
   `
 }
-/*
-Desciption:  Function to create a modal, pass along type and target arguments. 
-@params:  type:   "string"   options: "addTodo" || "addSection"
-@params   target: "string"   <this is for addTodo and dicates which section the todo should be added to>
- */
-const openModal = (type, target) => {
-  let modalHTML = '';
-  console.log(type, target)
-  // insert overlay first.
-  modalOverlay("open");
 
-  const modalWrapper = document.createElement("div");
-  if(type === "add-section") {
-    addSectionModalHTML(type)
-  }else {
-    modalHTML = addTodoModalHTML(type, target)
-    console.log(modalHTML)
-  }
-  modalWrapper.innerHTML = modalHTML;
-  document.body.appendChild(modalWrapper)
+const deleteSectionModalHTML = () => {
+  return `
+  <div class="modal">
+    <div class="top-row">
+      <h2> Delete Sections</h2>
+      <button class="close-modal btn2" >Close</button>
+    </div>
+    <div class="inputs">
+      ${getSections()}
+    </div>
+    <div class="btn-wrapper">
+      <button class="btn1 delete-section" onclick="checkSectionsToDelete()"> Update </button>
+    </div>
+  </div>
+  `
+}
 
-  document.querySelector('.close-modal').addEventListener("click", closeModal)
-  if(type === "add-section") {
-    document.querySelector(".btn-wrapper > .btn1.add-section").addEventListener('click', () => addSection())
-  } else {
-    document.querySelector(".btn-wrapper > .btn1.add-todo").addEventListener('click', () => addTodo(target))
+// Gets called from inside deleteSectionModalHTML()
+const getSections = () => {
+  let sections2DeleteHTML = `
+   <p> Tick to check the sections that you want to delete.</p>  `
+
+  for(keys in todos) {
+    // Should be able to delete all but the priority section.
+    if(keys !== "priority") {
+      sections2DeleteHTML += `
+      <div id="deleteSectionCheckboxes">
+        ${keys}: <input type="checkbox" name="delete-section-cb" id="${keys}"/>
+      </div>
+      `
+    }
   }
-  document.querySelector('textarea').addEventListener("focus", () => {
-    document.querySelector('textarea').textContent = ""
-  })
-  document.getElementById("id").focus()
+  return sections2DeleteHTML;
+}
+
+// on click of the update button in deleteSectionModalHTML() 
+// function runs to check which section checkboxes have been ticked for deletion.
+const checkSectionsToDelete = () => {
+  var checkedBoxes = document.querySelectorAll('input[name="delete-section-cb"]:checked');
+  // Remove the section
+     const toArray = [...checkedBoxes];
+     const checkBoxIDs = toArray.map(el => el.id );
+
+     // Go through the todos array and try to find a key that matches each element in the checkboxid's list and remove it from the todos.
+     checkBoxIDs.forEach(id => {
+      delete todos[id];
+      localStorage.setItem('todos', JSON.stringify(todos))
+      refreshApp();
+      closeModal();
+     })
 }
 
 const closeModal = () => {
@@ -278,7 +375,9 @@ const closeModal = () => {
 }
 
 
-
+/* ====================================================
+   ==============  Global Event Handlers ==============
+   ==================================================== */
 
 // Event listener to open the nav menu dropdown onclick of the menu button
 document.querySelector('#menu').addEventListener("click", () => {
@@ -286,12 +385,17 @@ document.querySelector('#menu').addEventListener("click", () => {
   element.style.opacity === "0" ? element.style.opacity = "1" : element.style.opacity = "0"
 })
 
-// Event listener to open a modal for creating a new section on click of the add section li
-document.querySelector('#menu .add-section').addEventListener("click", () => {
+//Open Modal:   Create a new section 
+document.querySelector('#menu .add-section-li').addEventListener("click", () => {
   openModal("add-section");
 })
 
-// Event listener to open a modal for creating a new todo 
+// Open Modal:  Delete a section
+document.querySelector('#menu .delete-section-li').addEventListener("click", () => {
+  openModal("delete-section");
+})
+
+// Open Modal:  Create Todo
  document.querySelector('#priority').addEventListener("click", () => {
   openModal("add-todo", "priority")
  })

@@ -101,6 +101,7 @@ section.widget.priority {
 section.widget.others {
   flex-grow: 1;
   margin: 0 50px 20px;
+
 }
 
 section.widget.others > section {
@@ -115,6 +116,7 @@ section.widget > section > div:first-child {
   justify-content: space-between;
   padding-bottom: 30px;
 }
+
 
 
 ul.sortable-list .item {
@@ -269,18 +271,19 @@ li *[contenteditable = "true"] {
     main {
       flex-direction: row;
     }
-    .widget.others {
-     
+    section.widget.priority {
+      flex-grow: 3;
     }
    }
 
    @media (min-width: 1100px) {
     section.widget.priority {
-      flex-grow: 4;
+      flex-grow: 3;
     }
 
     section.widget.others {
       flex-grow: 1;
+      max-width: 350px;
     }
 
     /* the buttons on right hand side widgets should be smaller */
