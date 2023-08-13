@@ -261,6 +261,19 @@ li *[contenteditable = "true"] {
 }
 
 
+/* Delete Setion modal */
+#deleteSectionCheckboxes {
+  padding: 20px;
+  margin: 0 100px;
+}
+
+#deleteSectionCheckboxes > li {
+  padding: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
 
 
 /* ====================
@@ -270,20 +283,21 @@ li *[contenteditable = "true"] {
    @media (min-width: 800px) {
     main {
       flex-direction: row;
+      justify-content: space-around;
     }
     section.widget.priority {
-      flex-grow: 3;
+      flex-grow: 2;
     }
    }
 
    @media (min-width: 1100px) {
     section.widget.priority {
-      flex-grow: 3;
+      flex-grow: 0.5;
     }
 
     section.widget.others {
-      flex-grow: 1;
-      max-width: 350px;
+      flex-grow: 1.5;
+      max-width: 450px;
     }
 
     /* the buttons on right hand side widgets should be smaller */
