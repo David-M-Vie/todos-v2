@@ -95,6 +95,7 @@ section.widget.others > section {
 
 section.widget.priority {
   margin: 0 30px 20px;
+  max-width: 750px;
   
 }
 
@@ -155,6 +156,7 @@ div.bottom-row {
 
 p.text {
   color: rgb(84, 84, 84);
+  max-width: 600px;
 }
 
 
