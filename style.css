@@ -160,6 +160,20 @@ p.text {
 }
 
 
+div > span.plus-priority {
+  font-size: 1.5rem;
+  color: #595D88;
+  display: block;
+  float: right;
+  cursor: pointer;
+}
+
+div > span.plus-todo:hover {
+  color: #24242a;
+}
+
+
+
 /* buttons */
 .btn1 {
   padding: 5px 10px;

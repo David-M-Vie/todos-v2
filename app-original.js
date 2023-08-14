@@ -168,57 +168,15 @@ const addSection = (e) => {
 }
 
 const addTodo = (target) => {
-
-   const widget = document.querySelector(`ul.sortable-list.${target}`)
-   
-   let html = '';
-   html += `
-   <li class="item"> 
-          <h4 class="top-row">
-            <span 
-              contentEditable="true"
-              onblur=""
-            >
-              Id: 
-            </span>
-            <input 
-              type="checkbox"
-            />
-            <button
-              class="btn1"
-            >
-              Add
-            </button>
-          </h4>
-          <div class="bottom-row">
-            <div class="col-1">
-              <p
-                contentEditable="true"
-                onblur=""
-                class="text"
-              >
-
-              </p>
-            </div>
-            <div class="col-2">
-              <p class="text">
-                Due: 
-              </p>
-            </div>
-          </div>
-        </li>        
-   `
-
-      document.getElementById('priority-new-todo-holder').innerHTML =  html
   
-  // const id = document.querySelector('#id').value;
-  // const description = document.querySelector('#description').value;
-  // const uid = Math.floor(Math.random() * Date.now());
-  // const todo = {uid, id, description, dueDate: "tbc", completed: false};
-  // todos[target].push(todo);
-  // localStorage.setItem("todos", JSON.stringify(todos));
-  // refreshApp();
-  // closeModal()
+  const id = document.querySelector('#id').value;
+  const description = document.querySelector('#description').value;
+  const uid = Math.floor(Math.random() * Date.now());
+  const todo = {uid, id, description, dueDate: "tbc", completed: false};
+  todos[target].push(todo);
+  localStorage.setItem("todos", JSON.stringify(todos));
+  refreshApp();
+  closeModal()
 }
 
 const toggleCompleted = (e) => {
@@ -428,7 +386,7 @@ document.querySelector('#menu').addEventListener("click", () => {
 })
 
 document.querySelector(".plus-priority").addEventListener("click", () => {
-  addTodo('priority')
+  alert('ADD Todo!')
 })
 
 //Open Modal:   Create a new section 
@@ -442,6 +400,6 @@ document.querySelector('#menu .delete-section-li').addEventListener("click", () 
 })
 
 // Open Modal:  Create Todo
- document.querySelector('#priority-todos').addEventListener("click", () => {
+ document.querySelector('#priority').addEventListener("click", () => {
   openModal("add-todo", "priority")
  })
