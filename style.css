@@ -99,6 +99,17 @@ section.widget.priority {
   
 }
 
+#priority-new-todo-holder textarea {
+  width: 465px;
+  height: 50px;
+  padding: 10px;
+  line-height: 1.4;
+}
+
+priority-new-todo-holder .top-row {
+  margin-left: 0;
+}
+
 section.widget.others {
   flex-grow: 1;
   margin: 0 50px 20px;
@@ -120,7 +131,7 @@ section.widget > section > div:first-child {
 
 
 
-ul.sortable-list .item {
+li.item {
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-bottom: 11px;
@@ -149,6 +160,12 @@ h4 input {
   margin-right:15px;
 }
 
+/* */
+#priority-new-todo-holder h4 input {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 div.bottom-row {
   display: flex;
   justify-content: space-between;
@@ -170,6 +187,13 @@ div > span.plus-priority {
 
 div > span.plus-todo:hover {
   color: #24242a;
+}
+
+#priority-new-todo-holder .top-row  span {
+  border: 1px solid rgb(216, 216, 216);
+  padding: 2px 10px;
+  color: rgb(184, 184, 184);
+  line-height: 1.8;
 }
 
 

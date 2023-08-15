@@ -3,6 +3,7 @@ let todos = JSON.parse(localStorage.getItem("todos")) || {
   "priority": []
 };
 
+
 console.log('Current Todos ', todos)
 
 // Factory html template for building out widgets
@@ -174,16 +175,8 @@ const addTodo = (target) => {
    let html = '';
    html += `
    <li class="item"> 
-          <h4 class="top-row">
-            <span 
-              contentEditable="true"
-              onblur=""
-            >
-              Id: 
-            </span>
-            <input 
-              type="checkbox"
-            />
+          <h4 class="top-row">      
+            <input type="text" id="id" name="id" placeholder="Id: " style="display: block"/>
             <button
               class="btn1"
             >
@@ -191,14 +184,8 @@ const addTodo = (target) => {
             </button>
           </h4>
           <div class="bottom-row">
-            <div class="col-1">
-              <p
-                contentEditable="true"
-                onblur=""
-                class="text"
-              >
-
-              </p>
+            <div class="col-1">        
+              <textarea  id="description"  placeholder="Description: "></textarea>
             </div>
             <div class="col-2">
               <p class="text">
@@ -441,7 +428,3 @@ document.querySelector('#menu .delete-section-li').addEventListener("click", () 
   openModal("delete-section");
 })
 
-// Open Modal:  Create Todo
- document.querySelector('#priority-todos').addEventListener("click", () => {
-  openModal("add-todo", "priority")
- })
