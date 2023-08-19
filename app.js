@@ -8,7 +8,7 @@ console.log('Current Todos ', todos)
 
 // Factory html template for building out widgets
 const widgetHtml = (keys) => {
-  // console.log('keys ', keys)
+  console.log('keys ', keys)
   let html = '';
 
   html += `
@@ -18,7 +18,7 @@ const widgetHtml = (keys) => {
     html += "<p>Nothing todo here! </p>"
   }else {
     todos[keys].forEach(item => {
-      // console.log('moop key ', keys)
+
       html += `
         <li class="item ${item.completed ? "completed" : ""}" 
           draggable="true"
@@ -63,6 +63,13 @@ const widgetHtml = (keys) => {
     })
   }      
   html += `</ul> `
+  html += `
+            <div id="${keys}-new-todo-holder"></div>
+            <div>
+              <span class="plus-${keys}">+</span>
+            </div>  
+          `
+  
   return html;
 }
 
@@ -78,7 +85,6 @@ const refreshApp = () => {
         html += `<section class="${keys}">
                   <div class="${keys}" style="display:flex; justify-content: space-between">
                     <h2>${keys}</h2>
-                    <button class="btn1 ${keys} open-modal" id="${keys}">Add </button>
                   </div>
                 `
         html += widgetHtml(keys)    
@@ -94,7 +100,7 @@ const refreshApp = () => {
   // Grab all the UL's for each widget
   const sortableLists = document.querySelectorAll(".sortable-list");
 
-  // Going through each UL's list-items.
+  // Going through each UL's list-items abd add the drag n drop re-order evant handlers. 
   sortableLists.forEach(list => {
     const items = list.querySelectorAll('.item');
     items.forEach(item => {
@@ -122,7 +128,6 @@ const refreshApp = () => {
   })
 
   const initSortableLists = (e) => {
-    console.log(e)
     const draggingItem = document.querySelector(".dragging");
     // find the UL parent of the item being dragged
     const targetList = draggingItem.closest('ul');
@@ -142,13 +147,9 @@ const refreshApp = () => {
   })
 
 
-  //  Setting the Add Todo click handler on each UL
-   for(let keys in todos) {
-    if(keys !== 'priority'){
-      document.querySelector(`#${keys}`).addEventListener("click", () => {
-      openModal("add-todo", `${keys}`)
-    })}
-   }
+  document.querySelector(".plus-priority").addEventListener("click", () => {
+    addTodo('priority')
+  })
 
 } // close refreshApp function
 
@@ -168,6 +169,8 @@ const addSection = (e) => {
   closeModal();
 }
 
+
+// when the + sign is clicked to create a new todo
 const addTodo = (target) => {
 
    const widget = document.querySelector(`ul.sortable-list.${target}`)
@@ -178,7 +181,7 @@ const addTodo = (target) => {
           <h4 class="top-row">      
             <input type="text" id="id" name="id" placeholder="Id: " style="display: block"/>
             <button
-              class="btn1"
+              class="btn1 add-priority-btn"
             >
               Add
             </button>
@@ -197,15 +200,18 @@ const addTodo = (target) => {
    `
 
       document.getElementById('priority-new-todo-holder').innerHTML =  html
+      document.querySelector(".add-priority-btn").addEventListener("click", () => {
+        const id = document.querySelector('#id').value;
+        const description = document.querySelector('#description').value;
+        const uid = Math.floor(Math.random() * Date.now());
+        const todo = {uid, id, description, dueDate: "tbc", completed: false};
+        todos[target].push(todo);
+        localStorage.setItem("todos", JSON.stringify(todos));
+        document.getElementById('priority-new-todo-holder').innerHTML =  "";
+        refreshApp();
+      })
   
-  // const id = document.querySelector('#id').value;
-  // const description = document.querySelector('#description').value;
-  // const uid = Math.floor(Math.random() * Date.now());
-  // const todo = {uid, id, description, dueDate: "tbc", completed: false};
-  // todos[target].push(todo);
-  // localStorage.setItem("todos", JSON.stringify(todos));
-  // refreshApp();
-  // closeModal()
+
 }
 
 const toggleCompleted = (e) => {
@@ -262,8 +268,8 @@ const modalOverlay = (status) => {
 
 /*
 Desciption:  Function to create a modal, pass along type and target arguments. 
-@params:  type:   "string"   options: "addTodo" || "addSection"
-@params   target: "string"   <this is for addTodo and dicates which section the todo should be added to>
+@params:  type:   "string"   options: "addSection"
+@params   target: "string"   <this is for addTodo and dicates which section the todo should be added to
  */
 const openModal = (type, target) => {
   let modalHTML = '';
@@ -278,10 +284,6 @@ const openModal = (type, target) => {
       modalHTML = addSectionModalHTML();
       break;
     
-    case 'add-todo':
-      modalHTML = addTodoModalHTML(type, target)
-      break; 
-
     case 'delete-section': 
       modalHTML = deleteSectionModalHTML()
       break;
@@ -307,26 +309,6 @@ const openModal = (type, target) => {
   }  
 }
 
-// Modal HTML Template for adding a todo // 
-const addTodoModalHTML = (type, target) => {
-  return `
-  <div class="modal">
-    <div class="top-row">
-      <h2> Add a Todo </h2>
-      <button class="close-modal btn2" >Close</button>
-    </div>
-    <div class="inputs">
-      <input type="text" placeholder="enter id" id="id" />
-    </div>
-    <div class="inputs">
-      <textarea id="description">enter description</textarea>
-    </div>
-    <div class="btn-wrapper">
-      <button class="btn1 add-todo"> Add </button>
-    </div>
-  </div>
-  `
-}
 
 // Modal HTML Template for adding a new section (widget) // 
 const addSectionModalHTML = () => {
@@ -414,9 +396,7 @@ document.querySelector('#menu').addEventListener("click", () => {
   element.style.opacity === "0" ? element.style.opacity = "1" : element.style.opacity = "0"
 })
 
-document.querySelector(".plus-priority").addEventListener("click", () => {
-  addTodo('priority')
-})
+
 
 //Open Modal:   Create a new section 
 document.querySelector('#menu .add-section-li').addEventListener("click", () => {
