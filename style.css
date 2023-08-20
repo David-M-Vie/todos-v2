@@ -83,6 +83,7 @@ header nav li#menu > div > ul.dropdown-menu > li:hover {
 main {
   display: flex;
   flex-direction: column;
+  min-height: 80vh;
 }
 
 section.widget.priority,
@@ -93,31 +94,44 @@ section.widget.others > section {
 }
 
 
-section.widget.priority {
+section.widget.priority,
+section.widget.others {
   margin: 0 30px 20px;
-  max-width: 750px;
+  min-width: 400px;
   
 }
 
-#priority-new-todo-holder textarea {
-  width: 465px;
-  height: 50px;
+.new-todo-holder textarea {
+  width: 100%;
   padding: 10px;
   line-height: 1.4;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
-priority-new-todo-holder .top-row {
+.new-todo-holder textarea:focus {
+  outline: none;
+
+}
+
+.new-todo-holder .top-row {
   margin-left: 0;
 }
 
-section.widget.others {
-  flex-grow: 1;
-  margin: 0 50px 20px;
-
+span[contenteditable="true"] {
+  /* stops the content of the ID field from being able to go off screen*/
+  max-width: 350px;
 }
 
+.back {
+  font-size: .7rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
 section.widget.others > section {
-  margin-bottom: 20px;
+  padding-bottom: 40px;
+  margin-bottom: 40px;
   font-size: .75rem;
 }
 
@@ -161,14 +175,20 @@ h4 input {
 }
 
 /* */
-#priority-new-todo-holder h4 input {
+.new-todo-holder h4 input {
   margin-left: 0;
   margin-right: 0;
+  display: block;
+  padding: 4px;
 }
 
 div.bottom-row {
   display: flex;
   justify-content: space-between;
+}
+
+div.bottom-row .col-1 {
+  width: 80%;
 }
 
 p.text {
@@ -177,7 +197,7 @@ p.text {
 }
 
 
-div > span.plus-priority {
+div.plus-sign > span {
   font-size: 1.5rem;
   color: #595D88;
   display: block;
@@ -185,7 +205,7 @@ div > span.plus-priority {
   cursor: pointer;
 }
 
-div > span.plus-todo:hover {
+div.plus-sign > span:hover {
   color: #24242a;
 }
 
@@ -270,7 +290,6 @@ section.widget.others > li {
   width: 80%;
   color: rgb(87, 86, 86);
   padding: 10px;
-  min-height: 100px;
 }
 
 input[type="checkbox"] {
@@ -323,22 +342,22 @@ li *[contenteditable = "true"] {
    @media (min-width: 800px) {
     main {
       flex-direction: row;
-      justify-content: space-around;
     }
     section.widget.priority {
-      flex-grow: 2;
+      width: 700px;
+    }
+
+    section.widget.others {
+      width: 450px;
     }
    }
 
    @media (min-width: 1100px) {
-    section.widget.priority {
-      flex-grow: 0.5;
-    }
 
-    section.widget.others {
-      flex-grow: 1.5;
-      max-width: 450px;
-    }
+
+  }
+
+
 
     /* the buttons on right hand side widgets should be smaller */
     section.widget.others button {
