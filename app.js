@@ -167,9 +167,10 @@ refreshApp();
 const addSection = (e) => {
   const text = `_${document.getElementById('sectionName').value}`;
   // trim any leading or traling whitespace.
-  text.trim();
+  const trimmed = text.trim();
+  console.log(trimmed)
   // replace any white space with "-"
-  const whiteSpaceRemover = text.replace(/\s/g, "-")
+  const whiteSpaceRemover = trimmed.replace(/\s/g, "-")
   console.log(whiteSpaceRemover)
   const sectionName = whiteSpaceRemover.replace(/[^a-zA-Z0-9$_-]/g, "")
   console.log(sectionName)
