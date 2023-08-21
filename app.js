@@ -31,6 +31,9 @@ const widgetHtml = (keys) => {
             >
               Id: ${item.id}
             </span>
+            <p class="due-date">
+              Due: ${new Date(item.dueDate).toDateString()}
+            </p>
             <input 
               type="checkbox"
               ${item.completed ? "checked" : ""}
@@ -51,11 +54,7 @@ const widgetHtml = (keys) => {
                 ${item.description}
               </p>
             </div>
-            <div class="col-2">
-              <p class="text">
-                Due: ${item.dueDate}
-              </p>
-            </div>
+
           </div>
         </li>          
       `
@@ -187,20 +186,17 @@ const addTodo = (target) => {
   console.log('typeof target', typeof target, 'target', target)
   const element = document.querySelector('.new-todo-holder');
   // Check to see if there is already an active todo form on the page for another widget, and if so close it before creating the new one. 
-  console.log(element)
   element && element.remove();
 
   // Create and insert the element that will hold the add-todo inputs //
   const div = document.createElement('div');
   div.id = `${target}-new-todo-holder`;
   div.classList.add('new-todo-holder')
-  console.log(typeof target, target)
   if(target === "priority") {
     const referenceEl = document.getElementById('priority-todos')
     referenceEl.insertBefore(div, referenceEl.querySelector('.plus-sign'))
   }else {
     const referenceEl = document.querySelector(`section.${target}`)
-    console.log(referenceEl)
     referenceEl.insertBefore(div, referenceEl.querySelector('.plus-sign'))
   }
   
@@ -213,7 +209,7 @@ const addTodo = (target) => {
           <h4 class="top-row">      
             <input type="text" id="id" name="id" placeholder="Id: "/>
             <p class="text">
-              Due: 
+              Due: <input type="date" id="due-date" />
             </p>
           </h4>
           <div class="bottom-row">
@@ -236,8 +232,14 @@ const addTodo = (target) => {
       document.querySelector(".add-btn").addEventListener("click", () => {
         const id = document.querySelector('#id').value;
         const description = document.querySelector('#description').value;
+        const date = document.querySelector('#due-date').value;
+        let dueDate = "n/a"
+        if(date) {
+          dueDate = new Date(date).getTime();  // convert to a timestamp and store as such.
+        }
+  
         const uid = Math.floor(Math.random() * Date.now());
-        const todo = {uid, id, description, dueDate: "tbc", completed: false};
+        const todo = {uid, id, description, dueDate, completed: false};
         todos[target].push(todo);
         localStorage.setItem("todos", JSON.stringify(todos));
         document.getElementById(`${target}-new-todo-holder`).innerHTML =  "";

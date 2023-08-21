@@ -161,6 +161,7 @@ h4 {
   display: flex;
   margin-bottom: 10px;
   justify-content: space-between;
+  align-items: center;
 }
 
 
@@ -192,8 +193,14 @@ div.bottom-row .col-1 {
 }
 
 p.text {
-  color: rgb(84, 84, 84);
+  color: rgb(0, 0, 0);
   max-width: 600px;
+}
+
+p.due-date {
+  font-size: .6rem;
+  margin-left: auto;
+  margin-right: 15px;
 }
 
 
@@ -295,8 +302,6 @@ section.widget.others > li {
 input[type="checkbox"] {
   height: 17px;
   width: 17px;
-  position: relative;
-  top: 5px;
 }
 
 input[type="checkbox"]:hover {
