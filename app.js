@@ -5,6 +5,8 @@ let todos = JSON.parse(localStorage.getItem("todos")) || {
 
 console.log('Current Todos ', todos)
 
+
+
 // Factory html template for building out widgets
 const widgetHtml = (keys) => {
 
@@ -24,16 +26,16 @@ const widgetHtml = (keys) => {
           data-key = "${keys}"
           data-uid ="${item.uid}"
         > 
-          <h4 class="top-row">
+          <div class="top-row">
             <span 
               contentEditable="true"
               onblur="editMode(${item.uid}, 'id', this)"
             >
               Id: ${item.id}
             </span>
-            <p class="due-date">
-              Due: ${new Date(item.dueDate).toDateString()}
-            </p>
+            <div class="due-date">
+              <p class="${checkOverdueClass(keys, item.uid)}" onclick="toggleDueDate('${keys}','${item.uid}', this, 'input-date')">Due: ${new Date(item.dueDate).toDateString()}</p>
+            </div>
             <input 
               type="checkbox"
               ${item.completed ? "checked" : ""}
@@ -43,7 +45,7 @@ const widgetHtml = (keys) => {
             >
               Delete
             </button>
-          </h4>
+          </div>
           <div class="bottom-row">
             <div class="col-1">
               <p
@@ -71,6 +73,28 @@ const widgetHtml = (keys) => {
 }
 
 const refreshApp = () => {
+
+  // When app is refreshed check to see if any todos are overdue and mark them ( via a css red class or similar...)
+  function checkOverdue () {
+    const keys = Object.keys(todos);
+    keys.forEach(key => {
+      todos[key].map(item => {
+        if(item.dueDate < Date.now()) {     
+          console.log('item', item)   
+          return item['overdue'] = true;         
+        }else {
+          return item['overdue'] = false;
+        }
+        
+      })
+    })
+    localStorage.setItem('todos', JSON.stringify(todos))
+  };
+  
+  console.log(typeof todos)
+  todos && checkOverdue();
+
+
 
   // // Build out the priority widget and any secondary sidebar widgets if there are any in the todos list. 
   const widgetBuilder = () => {
@@ -151,8 +175,6 @@ const refreshApp = () => {
     });
     ul.addEventListener("dragenter", (e) => e.preventDefault());
   })
-
-
 
 } // close refreshApp function
 
@@ -245,6 +267,7 @@ const addTodo = (target) => {
         document.getElementById(`${target}-new-todo-holder`).innerHTML =  "";
         refreshApp();
       }) 
+
 
 }
 
@@ -506,4 +529,41 @@ document.querySelector('#menu .delete-section-li').addEventListener("click", () 
 })
 
 
+/*
+  @Param:  widget   'Priority' || 'other widget name'
+  @Param:  uid       The unique identifier of the todo item
+  @Param:  el       HTML reference to the todo item
+  @Param   mode     'input-date' || 'text'  toggle between showing the input field to udpate the date, or the <p> text displaying the date. 
+*/
+const toggleDueDate = (widget, uid, el, mode) => {
+  console.log(widget, uid, el)
+  const html = mode === 'input-date' ? `<input type="date" onblur="setDate(this.value,'${widget}', ${uid})"/>` : `<p>Due: ${new Date(item.dueDate).toDateString()}</p>`
+  el.parentElement.innerHTML = html;
+}
 
+const setDate = (newDate, widget, uid) => {
+  console.log(newDate, widget, uid)
+  todos[widget].map(todo => {
+    if(todo.uid === uid) {
+      todo.dueDate = new Date(newDate).getTime()
+    }
+    return todo;
+  })
+  localStorage.setItem('todos', JSON.stringify(todos))
+  refreshApp();
+}
+
+
+// when widgetHTML is building the list of todos to display,  each todo needs checked to see if it's overdue status is true, and if so, CSS set to highlight this to the user. 
+function checkOverdueClass(widget, uid) {
+  const el  = document.querySelector(".due-date > p");
+  console.log('el ', el)
+
+  const todo = todos[widget].find(todo => todo.uid === uid)
+  if(todo.overdue) {
+    console.log("I'm overdue!")
+    return 'overdue'
+  }else {
+    return ''
+  }
+}

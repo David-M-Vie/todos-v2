@@ -165,14 +165,33 @@ h4 {
 }
 
 
-h4.top-row span {
+.top-row span {
   font-size:.9rem;
-  color: rgb(104, 104, 104)
+  color: rgb(104, 104, 104);
+  margin-right: 10px;
 }
 
-h4 input {
+.others .top-row span {
+  max-width: 200px;
+}
+
+div input {
   margin-left: auto;
   margin-right:15px;
+  position: relative;
+  font-size: .8rem;
+}
+
+.overdue {
+  color: red;
+
+}
+.overdue:after {
+  content: '!!Overdue!!';
+  position: relative;
+  top: -15px;
+  left: -50%;
+
 }
 
 /* */
@@ -197,10 +216,11 @@ p.text {
   max-width: 600px;
 }
 
-p.due-date {
-  font-size: .6rem;
+div.due-date {
+  font-size: .5rem;
   margin-left: auto;
   margin-right: 15px;
+  cursor: pointer;
 }
 
 
